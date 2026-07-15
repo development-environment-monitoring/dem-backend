@@ -19,5 +19,9 @@ export class UpdateVerificationDto {
 
 	@IsOptional()
 	@IsString()
-	expectedOutput?: string;
+	validationType?: string;
+
+	@IsOptional()
+	@IsString()
+	validationValue?: string;
 }

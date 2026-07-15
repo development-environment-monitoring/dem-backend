@@ -18,5 +18,9 @@ export class CreateVerificationDto {
 
   @IsString()
   @IsNotEmpty()
-  expectedOutput: string;
+  validationType?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  validationValue: string;
 }

@@ -23,8 +23,11 @@ export class Verification {
   @Column({ type: 'text' })
   command: string;
 
-  @Column({ name: 'expected_output', type: 'text' })
-  expectedOutput: string;
+  @Column({ name: 'validation_value', type: 'text', nullable: true })
+  validationValue: string;
+
+  @Column({ name: 'validation_type', type: 'text', default: 'exact' })
+  validationType: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
