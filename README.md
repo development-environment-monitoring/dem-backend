@@ -5,6 +5,10 @@
 - Desenvolvimento: `npm run start:dev`
 - Produção local: `npm run build && npm run start:prod`
 
+## API base
+
+Todos os endpoints usam o prefixo `/api`.
+
 ## Banco de dados
 
 Defina `DB_TYPE` para alternar entre os bancos:
