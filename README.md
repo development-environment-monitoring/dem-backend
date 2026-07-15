@@ -25,6 +25,21 @@ Variáveis adicionais para PostgreSQL:
 - `DB_NAME`
 - `DB_SSL=true` para habilitar SSL
 
+## Token fixo compartilhado
+
+Os endpoints abaixo usam o mesmo `x-api-token` e a mesma validação centralizada:
+
+- `POST /api/verification-results`
+- `GET /api/verifications/active`
+
+Variável de ambiente:
+
+- `CLIENT_FIXED_TOKEN`
+
+Default:
+
+- `df991b67-24b2-4121-8c73-9c3ab4b0dba2`
+
 Exemplo com SQLite:
 
 - `DB_TYPE=sqlite DB_NAME=dem.sqlite npm run start:dev`

@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
 import { UsersService } from '../users/users.service';
+import { isValidPublicEndpointToken } from '../public-endpoint-token';
 import { CreateVerificationDto } from './dto/create-verification.dto';
 import { UpdateVerificationDto } from './dto/update-verification.dto';
 import { Verification } from './verification.entity';
@@ -33,7 +34,10 @@ export class VerificationsController {
   }
 
   @Get('active')
-  async findAllActive(): Promise<Verification[]> {
+  async findAllActive(
+    @Headers('x-api-token') apiToken?: string,
+  ): Promise<Verification[]> {
+    this.assertSharedToken(apiToken);
     return this.verificationsService.findAllActive();
   }
 
@@ -64,6 +68,12 @@ export class VerificationsController {
     await this.assertAdmin(authorization);
     await this.verificationsService.remove(id);
     return { success: true };
+  }
+
+  private assertSharedToken(apiToken?: string): void {
+    if (!isValidPublicEndpointToken(apiToken)) {
+      throw new UnauthorizedException('Token fixo inválido ou ausente.');
+    }
   }
 
   private async assertAdmin(authorization?: string): Promise<void> {

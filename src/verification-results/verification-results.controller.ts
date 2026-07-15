@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
 import { UsersService } from '../users/users.service';
+import { isValidPublicEndpointToken } from '../public-endpoint-token';
 import { CreateVerificationResultDto } from './dto/create-verification-result.dto';
 import { UpdateMachineAliasDto } from './dto/update-machine-alias.dto';
 import { VerificationResult } from './verification-result.entity';
@@ -38,7 +39,9 @@ export class VerificationResultsController {
   @Post()
   async create(
     @Body() createVerificationResultDto: CreateVerificationResultDto,
+    @Headers('x-api-token') apiToken?: string,
   ): Promise<VerificationResult> {
+    this.assertSharedToken(apiToken);
     return this.verificationResultsService.create(createVerificationResultDto);
   }
 
@@ -66,6 +69,12 @@ export class VerificationResultsController {
       machineId,
       alias: alias?.alias ?? null,
     };
+  }
+
+  private assertSharedToken(apiToken?: string): void {
+    if (!isValidPublicEndpointToken(apiToken)) {
+      throw new UnauthorizedException('Token fixo inválido ou ausente.');
+    }
   }
 
   private async assertAdmin(authorization?: string): Promise<void> {
