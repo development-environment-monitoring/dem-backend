@@ -40,8 +40,9 @@ export class VerificationResultsController {
   async create(
     @Body() createVerificationResultDto: CreateVerificationResultDto,
     @Headers('x-api-token') apiToken?: string,
+    @Headers('authorization') authorization?: string,
   ): Promise<VerificationResult> {
-    this.assertSharedToken(apiToken);
+    this.assertSharedToken(apiToken, authorization);
     return this.verificationResultsService.create(createVerificationResultDto);
   }
 
@@ -71,7 +72,17 @@ export class VerificationResultsController {
     };
   }
 
-  private assertSharedToken(apiToken?: string): void {
+  private assertSharedToken(
+    apiToken?: string,
+    authorization?: string,
+  ): void {
+    const token = authorization?.replace('Bearer ', '').trim() ?? '';
+    const session = this.authService.validateToken(token);
+
+    if (session) {
+      return;
+    }
+
     if (!isValidPublicEndpointToken(apiToken)) {
       throw new UnauthorizedException('Token fixo inválido ou ausente.');
     }

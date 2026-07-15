@@ -35,9 +35,10 @@ export class VerificationsController {
 
   @Get('active')
   async findAllActive(
+    @Headers('authorization') authorization?: string,
     @Headers('x-api-token') apiToken?: string,
   ): Promise<Verification[]> {
-    this.assertSharedToken(apiToken);
+    this.assertSharedToken(apiToken, authorization);
     return this.verificationsService.findAllActive();
   }
 
@@ -70,7 +71,17 @@ export class VerificationsController {
     return { success: true };
   }
 
-  private assertSharedToken(apiToken?: string): void {
+  private assertSharedToken(
+    apiToken?: string,
+    authorization?: string,
+  ): void {
+    const token = authorization?.replace('Bearer ', '').trim() ?? '';
+    const session = this.authService.validateToken(token);
+
+    if (session) {
+      return;
+    }
+
     if (!isValidPublicEndpointToken(apiToken)) {
       throw new UnauthorizedException('Token fixo inválido ou ausente.');
     }
