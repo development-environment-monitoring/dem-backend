@@ -13,7 +13,7 @@ export class VerificationResult {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'processed_at', type: 'datetime' })
+  @Column({ name: 'processed_at', type: 'timestamp' })
   processedAt: Date;
 
   @CreateDateColumn({ name: 'received_at' })
