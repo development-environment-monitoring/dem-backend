@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { ReportsModule } from './reports/reports.module';
 import { UsersModule } from './users/users.module';
 import { VerificationResultsModule } from './verification-results/verification-results.module';
 import { VerificationsModule } from './verifications/verifications.module';
@@ -39,6 +40,7 @@ const typeOrmOptions = isPostgres
     AuthModule,
     VerificationsModule,
     VerificationResultsModule,
+    ReportsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
