@@ -142,4 +142,28 @@ export class UsersService {
     return { id: saved.id, username: saved.username, role: saved.role };
   }
 
+  async deleteUser(targetUserId: number, requestingUsername: string): Promise<void> {
+    const user = await this.usersRepository.findOne({ where: { id: targetUserId } });
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado.');
+    }
+
+    if (user.username === requestingUsername) {
+      throw new BadRequestException('Não é permitido deletar a própria conta.');
+    }
+
+    if (user.role === 'ADMIN') {
+      const adminsCount = await this.usersRepository.count({ where: { role: 'ADMIN' } });
+
+      if (adminsCount <= 1) {
+        throw new BadRequestException(
+          'Não é permitido deletar o último administrador.',
+        );
+      }
+    }
+
+    await this.usersRepository.delete(targetUserId);
+  }
+
 }

@@ -2,9 +2,11 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   ForbiddenException,
   Get,
   Headers,
+  HttpCode,
   Param,
   ParseIntPipe,
   Post,
@@ -115,12 +117,24 @@ export class AuthController {
     return this.usersService.updateUserRole(id, updateUserRoleDto.role);
   }
 
-  private async assertAdmin(authorization?: string): Promise<void> {
+  @Delete('users/:id')
+  @HttpCode(204)
+  async deleteUser(
+    @Param('id', ParseIntPipe) id: number,
+    @Headers('authorization') authorization?: string,
+  ): Promise<void> {
+    const session = await this.assertAdmin(authorization);
+    await this.usersService.deleteUser(id, session.username);
+  }
+
+  private async assertAdmin(authorization?: string): Promise<{ username: string; role: 'ADMIN' | 'NORMAL' }> {
     const session = await this.assertAuthenticated(authorization);
 
     if (session.role !== 'ADMIN') {
       throw new ForbiddenException('Acesso permitido apenas para administrador.');
     }
+
+    return session;
   }
 
   private async assertAuthenticated(
