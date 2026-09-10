@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   ForbiddenException,
   Get,
   Headers,
@@ -70,6 +71,17 @@ export class VerificationResultsController {
       machineId,
       alias: alias?.alias ?? null,
     };
+  }
+
+  @Delete('devices/:machineId')
+  async deleteDevice(
+    @Param('machineId') machineId: string,
+    @Headers('authorization') authorization?: string,
+  ): Promise<{ machineId: string }> {
+    await this.assertAdmin(authorization);
+    await this.verificationResultsService.deleteDevice(machineId);
+
+    return { machineId };
   }
 
   private assertSharedToken(

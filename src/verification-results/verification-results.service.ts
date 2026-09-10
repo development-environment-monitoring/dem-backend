@@ -165,4 +165,27 @@ export class VerificationResultsService {
 
     return this.machineAliasesRepository.save(created);
   }
+
+  async deleteDevice(machineId: string): Promise<void> {
+    const normalizedMachineId = machineId.trim();
+
+    if (!normalizedMachineId) {
+      throw new NotFoundException('Machine ID inválido.');
+    }
+
+    const exists = await this.verificationResultsRepository.exists({
+      where: { machineId: normalizedMachineId },
+    });
+
+    if (!exists) {
+      throw new NotFoundException('Dispositivo não encontrado.');
+    }
+
+    await this.verificationResultsRepository.delete({
+      machineId: normalizedMachineId,
+    });
+    await this.machineAliasesRepository.delete({
+      machineId: normalizedMachineId,
+    });
+  }
 }
