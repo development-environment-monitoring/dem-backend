@@ -2,12 +2,24 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Verification } from '../verifications/verification.entity';
 
+@Index('IDX_verification_results_machine_received', [
+  'machineId',
+  'receivedAt',
+  'id',
+])
+@Index('IDX_verification_results_machine_verification_received', [
+  'machineId',
+  'verificationId',
+  'receivedAt',
+  'id',
+])
 @Entity('verification_results')
 export class VerificationResult {
   @PrimaryGeneratedColumn()
